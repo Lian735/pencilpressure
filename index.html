@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencil Pressure</title> <!-- Titel geändert -->
+  <title>Pencil Pressure</title>
   <style>
     body {
       display: flex;
@@ -27,6 +27,7 @@
       font-weight: bold;
       text-align: center;
       color: #d6d6d6; /* Textfarbe */
+      opacity: 0; /* Anfangszustand des Textes */
     }
   </style>
 </head>
@@ -51,6 +52,7 @@
         // Gewichtsschätzung basierend auf dem Druck, multipliziert mit 3
         const weight = (event.pressure * 200 * 3).toFixed(1); // Gewicht in Gramm, multipliziert mit 3
         weightDisplay.textContent = `${weight}g`;
+        weightDisplay.style.opacity = '1'; // Text wird sichtbar
 
         // Kreisfarbe wird je nach Gewicht heller
         const brightness = 1 + event.pressure * 3; // Je mehr Druck, desto heller
@@ -72,16 +74,22 @@
         weightDisplay.style.left = `${event.clientX - weightDisplay.offsetWidth / 2}px`;
         weightDisplay.style.top = `${event.clientY + size / 2 + 10}px`;
       } else {
-        // Wenn der Bildschirm nicht berührt wird, wird der Text unsichtbar
-        weightDisplay.style.opacity = '0'; // Text wird unsichtbar
+        // Wenn der Bildschirm nicht berührt wird, bleibt der Text unsichtbar
+        weightDisplay.style.opacity = '0'; // Text bleibt unsichtbar
       }
     });
 
     window.addEventListener('pointerup', () => {
+      // Wenn der Druck losgelassen wird, setze alles zurück
       circle.style.width = '0px';
       circle.style.height = '0px';
       weightDisplay.textContent = '';
       weightDisplay.style.opacity = '0'; // Text verschwindet
+    });
+
+    window.addEventListener('pointerdown', () => {
+      // Wenn der Druck neu gesetzt wird, stelle sicher, dass der Text wieder erscheint
+      weightDisplay.style.opacity = '0';
     });
   </script>
 </body>
