@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencil Pressure</title>
+  <title>Druckerkennung</title>
   <style>
     body {
       display: flex;
@@ -21,19 +21,18 @@
       border-radius: 50%;
       pointer-events: none;
     }
-    #weight {
+    #weight, #pressure {
       position: absolute;
       font-size: 24px;
       font-weight: bold;
       text-align: center;
-      color: #3f2954; /* Textfarbe entspricht dem Kreis, aber dunkler */
+      color: #d6d6d6; /* Textfarbe */
     }
     #pressure {
       position: fixed;
       bottom: 20px;
       font-size: 20px;
       font-weight: bold;
-      color: #333;
       text-align: center;
     }
   </style>
@@ -81,16 +80,21 @@
         // Position des Textes unterhalb des Kreises
         weightDisplay.style.left = `${event.clientX - weightDisplay.offsetWidth / 2}px`;
         weightDisplay.style.top = `${event.clientY + size / 2 + 10}px`;
+
+        // Druckanzeige nur, wenn der Pencil den Bildschirm berührt
+        pressureDisplay.textContent = `Druck: ${(event.pressure * 100).toFixed(1)}%`;
+        pressureDisplay.style.display = 'none'; // Drucktext wird nur angezeigt, wenn der Pencil nicht berührt
+
       } else {
-        // Falls der Apple Pencil nicht den Bildschirm berührt, Gramm-Anzeige unten in der Mitte
+        // Wenn der Apple Pencil den Bildschirm nicht berührt, wird der Druck weiterhin angezeigt
+        pressureDisplay.style.display = 'block'; // Anzeige des Drucks
+        pressureDisplay.textContent = `Druck: ${(event.pressure * 100).toFixed(1)}%`;
+
+        // Gramm-Anzeige wird unten in der Mitte angezeigt
         weightDisplay.style.left = '50%';
         weightDisplay.style.transform = 'translateX(-50%)';
         weightDisplay.style.bottom = '20px';
-        pressureDisplay.textContent = `Druck: ${(event.pressure * 100).toFixed(1)}%`;
       }
-
-      // Zeigt den aktuellen Druck an, auch wenn der Apple Pencil den Bildschirm nicht berührt
-      pressureDisplay.textContent = `Druck: ${(event.pressure * 100).toFixed(1)}%`;
     });
 
     window.addEventListener('pointerup', () => {
@@ -99,6 +103,7 @@
       weightDisplay.textContent = '';
       weightDisplay.style.bottom = 'auto';
       pressureDisplay.textContent = '';
+      pressureDisplay.style.display = 'none'; // Drucktext verschwindet, wenn der Pencil den Bildschirm nicht berührt
     });
   </script>
 </body>
