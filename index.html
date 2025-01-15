@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencil Pressure</title>
+  <title>Druckerkennung</title>
   <style>
     body {
       display: flex;
@@ -48,8 +48,8 @@
         circle.style.left = `${event.clientX - size / 2}px`;
         circle.style.top = `${event.clientY - size / 2}px`;
 
-        // Gewichtsschätzung basierend auf dem Druck (0 - 1 Skala)
-        const weight = (event.pressure * 100).toFixed(1); // Gewicht in Gramm (geschätzt, halbiert)
+        // Gewichtsschätzung basierend auf dem Druck (kein Limit)
+        const weight = (event.pressure * 200).toFixed(1); // Gewicht in Gramm, kein Limit
         weightDisplay.textContent = `${weight}g`;
 
         // Position des Textes unterhalb des Kreises
