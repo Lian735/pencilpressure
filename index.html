@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Druckerkennung</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    #circle {
+      position: absolute;
+      background-color: rgba(0, 150, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="circle"></div>
+
+  <script>
+    const circle = document.getElementById('circle');
+
+    window.addEventListener('pointermove', (event) => {
+      if (event.pressure > 0) {
+        const size = event.pressure * 200; // Druck skaliert die Kreisgröße
+        circle.style.width = `${size}px`;
+        circle.style.height = `${size}px`;
+        circle.style.left = `${event.clientX - size / 2}px`;
+        circle.style.top = `${event.clientY - size / 2}px`;
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      circle.style.width = '0px';
+      circle.style.height = '0px';
+    });
+  </script>
+</body>
+</html>
