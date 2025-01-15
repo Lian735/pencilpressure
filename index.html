@@ -14,6 +14,8 @@
       background-color: #4a4a4a; /* Hintergrundfarbe */
       user-select: none; /* Verhindert das Markieren von Text */
       -webkit-user-select: none; /* Speziell für Safari */
+      -moz-user-select: none; /* Speziell für Firefox */
+      -webkit-touch-callout: none; /* Verhindert Touch-Menüs in Safari */
       overflow: hidden; /* Verhindert das Scrollen */
     }
     #circle {
@@ -50,9 +52,11 @@
         circle.style.left = `${event.clientX - size / 2}px`;
         circle.style.top = `${event.clientY - size / 2}px`;
 
-        // Gewichtsschätzung basierend auf dem Druck, multipliziert mit 3
-        const weight = (event.pressure * 200 * 3).toFixed(1); // Gewicht in Gramm, multipliziert mit 3
-        weightDisplay.textContent = `${weight}g`;
+        // Korrektur des Gewichts basierend auf dem Verhältnis
+        const actualWeight = 20; // Tatsächliches Gewicht in Gramm (z.B. Apple Pencil 1. Gen.)
+        const displayedWeight = (event.pressure * 200 * actualWeight) / 100; // Gewicht mit Skalierung
+
+        weightDisplay.textContent = `${displayedWeight.toFixed(1)}g`;
         weightDisplay.style.opacity = '1'; // Text wird sichtbar
 
         // Kreisfarbe wird je nach Gewicht heller
