@@ -52,9 +52,12 @@
         circle.style.left = `${event.clientX - size / 2}px`;
         circle.style.top = `${event.clientY - size / 2}px`;
 
-        // Korrektur des Gewichts basierend auf dem Verhältnis
-        const actualWeight = 20; // Tatsächliches Gewicht in Gramm (z.B. Apple Pencil 1. Gen.)
-        const displayedWeight = (event.pressure * 200 * actualWeight) / 100; // Gewicht mit Skalierung
+        // Tatsächliches Gewicht in Gramm (z.B. Apple Pencil 1. Gen. mit 20g)
+        const actualWeight = 20;
+        
+        // Umrechnung der Druckmessung zu Gewicht, basierend auf dem Skalierungsfaktor
+        // Der Wert 200 wurde so gewählt, dass wir beim normalen Druck den Wert 20g erhalten
+        const displayedWeight = (event.pressure * 200 * actualWeight) / 200; 
 
         weightDisplay.textContent = `${displayedWeight.toFixed(1)}g`;
         weightDisplay.style.opacity = '1'; // Text wird sichtbar
