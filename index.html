@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencil Pressure</title>
+  <title>Druckerkennung</title>
   <style>
     body {
       display: flex;
@@ -13,6 +13,7 @@
       margin: 0;
       background-color: #f0f0f0;
       user-select: none; /* Verhindert das Markieren von Text */
+      overflow: hidden; /* Verhindert das Scrollen */
     }
     #circle {
       position: absolute;
@@ -21,24 +22,24 @@
       pointer-events: none;
     }
     #weight {
-      position: fixed;
-      bottom: 20px;
+      position: absolute;
       font-size: 24px;
       font-weight: bold;
       color: #333;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div id="circle"></div>
-  <div id="weight">Gewicht: 0g</div>
+  <div id="weight"></div>
 
   <script>
     const circle = document.getElementById('circle');
     const weightDisplay = document.getElementById('weight');
 
     window.addEventListener('pointermove', (event) => {
-      event.preventDefault(); // Verhindert das Markieren
+      event.preventDefault(); // Verhindert das Markieren und Scrollen
 
       if (event.pressure > 0) {
         const size = event.pressure * 200; // Druck skaliert die Kreisgröße
@@ -49,14 +50,18 @@
 
         // Gewichtsschätzung basierend auf dem Druck (0 - 1 Skala)
         const weight = (event.pressure * 200).toFixed(1); // Gewicht in Gramm (geschätzt)
-        weightDisplay.textContent = `Gewicht: ${weight}g`;
+        weightDisplay.textContent = `${weight}g`;
+
+        // Position des Textes unterhalb des Kreises
+        weightDisplay.style.left = `${event.clientX - weightDisplay.offsetWidth / 2}px`;
+        weightDisplay.style.top = `${event.clientY + size / 2 + 10}px`;
       }
     });
 
     window.addEventListener('pointerup', () => {
       circle.style.width = '0px';
       circle.style.height = '0px';
-      weightDisplay.textContent = 'Gewicht: 0g';
+      weightDisplay.textContent = '';
     });
   </script>
 </body>
