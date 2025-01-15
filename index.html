@@ -12,6 +12,7 @@
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
+      user-select: none; /* Verhindert das Markieren von Text */
     }
     #circle {
       position: absolute;
@@ -19,27 +20,43 @@
       border-radius: 50%;
       pointer-events: none;
     }
+    #weight {
+      position: fixed;
+      bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
   </style>
 </head>
 <body>
   <div id="circle"></div>
+  <div id="weight">Gewicht: 0g</div>
 
   <script>
     const circle = document.getElementById('circle');
+    const weightDisplay = document.getElementById('weight');
 
     window.addEventListener('pointermove', (event) => {
+      event.preventDefault(); // Verhindert das Markieren
+
       if (event.pressure > 0) {
         const size = event.pressure * 200; // Druck skaliert die Kreisgröße
         circle.style.width = `${size}px`;
         circle.style.height = `${size}px`;
         circle.style.left = `${event.clientX - size / 2}px`;
         circle.style.top = `${event.clientY - size / 2}px`;
+
+        // Gewichtsschätzung basierend auf dem Druck (0 - 1 Skala)
+        const weight = (event.pressure * 200).toFixed(1); // Gewicht in Gramm (geschätzt)
+        weightDisplay.textContent = `Gewicht: ${weight}g`;
       }
     });
 
     window.addEventListener('pointerup', () => {
       circle.style.width = '0px';
       circle.style.height = '0px';
+      weightDisplay.textContent = 'Gewicht: 0g';
     });
   </script>
 </body>
