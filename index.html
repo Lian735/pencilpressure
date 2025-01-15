@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Druckerkennung</title>
+  <title>Pencil Pressure</title> <!-- Titel geändert -->
   <style>
     body {
       display: flex;
@@ -14,13 +14,13 @@
       background-color: #4a4a4a; /* Hintergrundfarbe */
       user-select: none; /* Verhindert das Markieren von Text */
       overflow: hidden; /* Verhindert das Scrollen */
+      font-family: Arial, sans-serif;
     }
     #circle {
       position: absolute;
       background-color: #3f2954; /* Standardfarbe des Kreises */
       border-radius: 50%;
       pointer-events: none;
-      transition: all 0.2s ease; /* Sanfte Übergänge für Kreisgröße und Farbe */
     }
     #weight {
       position: absolute;
@@ -28,20 +28,41 @@
       font-weight: bold;
       text-align: center;
       color: #d6d6d6; /* Textfarbe */
-      transition: opacity 0.2s ease, top 0.2s ease; /* Sanfte Animationen für Text */
+    }
+    #error {
+      position: absolute;
+      font-size: 16px;
+      color: yellow;
+      text-align: center;
+      opacity: 0; /* Standardmäßig unsichtbar */
+      transition: opacity 0.2s ease;
     }
   </style>
 </head>
 <body>
   <div id="circle"></div>
   <div id="weight"></div>
+  <div id="error">For accurate results, the Apple Pencil should not be tilted too much.</div> <!-- Fehlermeldung -->
 
   <script>
     const circle = document.getElementById('circle');
     const weightDisplay = document.getElementById('weight');
+    const errorDisplay = document.getElementById('error');
 
     window.addEventListener('pointermove', (event) => {
       event.preventDefault(); // Verhindert das Markieren und Scrollen
+
+      // Prüfen, ob der Apple Pencil zu stark geneigt ist
+      const tiltThreshold = 0.5; // Schwellenwert für die Neigung
+      const tiltX = Math.abs(event.pointerTiltX); // Neigung in X-Richtung
+      const tiltY = Math.abs(event.pointerTiltY); // Neigung in Y-Richtung
+      const tiltTooMuch = tiltX > tiltThreshold || tiltY > tiltThreshold;
+
+      if (tiltTooMuch) {
+        errorDisplay.style.opacity = '1'; // Zeigt die Fehlermeldung an
+      } else {
+        errorDisplay.style.opacity = '0'; // Verbirgt die Fehlermeldung
+      }
 
       if (event.pressure > 0) {
         const size = event.pressure * 200; // Druck skaliert die Kreisgröße
@@ -70,12 +91,11 @@
         };
         weightDisplay.style.color = darkenColor(circle.style.backgroundColor);
 
-        // Position des Textes unterhalb des Kreises mit Animation
+        // Position des Textes unterhalb des Kreises
         weightDisplay.style.left = `${event.clientX - weightDisplay.offsetWidth / 2}px`;
         weightDisplay.style.top = `${event.clientY + size / 2 + 10}px`;
-        weightDisplay.style.opacity = '1'; // Macht den Text sichtbar
       } else {
-        // Wenn der Bildschirm nicht berührt wird, wird der Text unsichtbar und der Kreis verschwindet
+        // Wenn der Bildschirm nicht berührt wird, wird der Text unsichtbar
         weightDisplay.style.opacity = '0'; // Text wird unsichtbar
       }
     });
@@ -85,6 +105,7 @@
       circle.style.height = '0px';
       weightDisplay.textContent = '';
       weightDisplay.style.opacity = '0'; // Text verschwindet
+      errorDisplay.style.opacity = '0'; // Fehlermeldung verschwindet
     });
   </script>
 </body>
